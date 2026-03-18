@@ -1,0 +1,53 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+<<<<<<< HEAD
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+=======
+>>>>>>> a5a6ce7 (first commit)
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+<<<<<<< HEAD
+# misc
+.DS_Store
+*.pem
+
+=======
+>>>>>>> a5a6ce7 (first commit)
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+<<<<<<< HEAD
+
+# local env files
+.env*.local
+.env
+=======
+.pnpm-debug.log*
+
+# env files
+.env*
+>>>>>>> a5a6ce7 (first commit)
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+<<<<<<< HEAD
+=======
+/lib/generated/prisma
+>>>>>>> a5a6ce7 (first commit)

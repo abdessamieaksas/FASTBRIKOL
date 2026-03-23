@@ -71,7 +71,7 @@ export default function LandingPage() {
                           size="lg"
                           className="bg-blue-600 hover:bg-blue-700 rounded-l-none px-6 py-6 text-base font-medium"
                         >
-                          Find a Pro
+                          Book a Service
                         </Button>
                       </div>
                       <div className="flex flex-wrap gap-2 mt-3 px-3">
@@ -290,7 +290,7 @@ export default function LandingPage() {
                   {[
                     {
                       number: "1",
-                      title: "Post a Job",
+                      title: "Post a Booking",
                       description:
                         "Describe what you need help with, when you need it done, and your budget. Our smart matching system will find the right professionals.",
                     },
@@ -430,7 +430,7 @@ export default function LandingPage() {
               <p className="mb-6 max-w-2xl text-muted-foreground">
                 Join thousands of satisfied homeowners who trust FASTBRIKOL for their home service needs.
               </p>
-              <Button className="bg-blue-600 hover:bg-blue-700">Find a Professional Today</Button>
+              <Button className="bg-blue-600 hover:bg-blue-700">Book a Service Today</Button>
             </div>
           </div>
         </section>
@@ -563,13 +563,13 @@ export default function LandingPage() {
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                  <Button
-                    size="lg"
-                    variant="default"
-                    className="bg-white text-blue-700 hover:bg-blue-50 text-base py-6"
-                  >
-                    Find a Professional
-                  </Button>
+                    <Button
+                      size="lg"
+                      variant="default"
+                      className="bg-white text-blue-700 hover:bg-blue-50 text-base py-6"
+                    >
+                      Book a Service
+                    </Button>
                   <Button
                     size="lg"
                     variant="outline"

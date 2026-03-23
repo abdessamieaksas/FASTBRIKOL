@@ -37,7 +37,7 @@ export function NavBar() {
             Home
           </Link>
           <Link href="/jobs" className="text-sm font-medium hover:text-blue-600 transition-colors">
-            Jobs
+            Booking Services
           </Link>
           <Link href="/how" className="text-sm font-medium hover:text-blue-600 transition-colors">
             How It Works
@@ -52,7 +52,7 @@ export function NavBar() {
         ) : isConnected ? (
           <div className="hidden md:flex items-center gap-4">
             <Button asChild variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
-              <Link href="/post-job">Post a Job</Link>
+              <Link href="/post-job">Book a Service</Link>
             </Button>
             
             <DropdownMenu>
@@ -126,7 +126,7 @@ export function NavBar() {
                   className="text-lg font-medium hover:text-blue-600 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Jobs
+                  Booking Services
                 </Link>
                 <Link
                   href="/how"
@@ -150,7 +150,7 @@ export function NavBar() {
                       className="text-lg font-medium text-blue-600 hover:text-blue-700 transition-colors"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      Post a Job
+                      Book a Service
                     </Link>
                     <Link
                       href="/dashboard"

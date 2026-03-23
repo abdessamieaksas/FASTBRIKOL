@@ -7,9 +7,9 @@ import { Providers } from "@/app/providers"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
-  title: "FASTBRIKOL - Find Skilled Workers For Your Home Projects",
+  title: "FASTBRIKOL - Expert Booking Services For Your Home",
   description:
-    "FASTBRIKOL connects you with local professionals for all your home repair and maintenance needs. Quality service, guaranteed satisfaction.",
+    "FASTBRIKOL connects you with local professionals for all your home repair and maintenance needs through our intuitive booking services system. Quality service, guaranteed satisfaction.",
   generator: "v0.dev",
 }
 

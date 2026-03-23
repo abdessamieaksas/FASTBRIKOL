@@ -1046,39 +1046,26 @@ export default function AboutPage() {
           </p>
         </motion.div>
 
-        <motion.div variants={staggerContainer} className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <motion.div variants={staggerContainer} className="grid gap-8 sm:grid-cols-2 lg:grid-cols-2 max-w-4xl mx-auto">
           <TeamMember
-            name="Mehdi El Bakouri"
-            role="Full-stack Developer"
+            name="HAMZA BENAARAB"
+            role="Product Manager"
             image="/placeholder.svg?height=400&width=300"
             location="Paris, France"
-            experience="5 ans d'expérience"
-            skills={["React", "Node.js", "MongoDB", "AWS"]}
+            experience="10 ans d'expérience"
+            skills={["Leadership", "Project Management", "Product Strategy", "Agile"]}
           />
-          <TeamMember
-            name="Ayoub Ettalbi"
-            role="UI/UX & Backend Developer"
-            image="/placeholder.svg?height=400&width=300"
-            location="Lyon, France"
-            experience="4 ans d'expérience"
-            skills={["UI/UX", "Python", "Django", "PostgreSQL"]}
-          />
-          <TeamMember
-            name="Amine Boutlha"
-            role="Project Manager"
-            image="/placeholder.svg?height=400&width=300"
-            location="Marseille, France"
-            experience="7 ans d'expérience"
-            skills={["Agile", "Scrum", "Product Management", "Leadership"]}
-          />
-          <TeamMember
-            name="Abdessamiai Aksas"
-            role="Frontend Developer"
-            image="/placeholder.svg?height=400&width=300"
-            location="Bordeaux, France"
-            experience="3 ans d'expérience"
-            skills={["React", "TypeScript", "Tailwind CSS", "Next.js"]}
-          />
+          <motion.div variants={scaleUp} whileHover={{ y: -8 }} className="group">
+            <Card className="overflow-hidden border-none bg-blue-50/50 shadow-none transition-all duration-300 h-full flex flex-col justify-center items-center p-8 text-center border border-dashed border-blue-200">
+               <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-white text-blue-500 shadow-sm">
+                 <Users className="h-12 w-12" />
+               </div>
+               <h3 className="mb-2 text-2xl font-bold text-gray-900">Team Of Developers</h3>
+               <p className="text-muted-foreground max-w-xs">
+                 Our dedicated team of world-class developers working together to build the future of home services.
+               </p>
+            </Card>
+          </motion.div>
         </motion.div>
       </AnimatedSection>
 

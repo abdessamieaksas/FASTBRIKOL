@@ -45,14 +45,15 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Switch } from "@/components/ui/switch"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts"
 import { JobCalendar } from "@/components/job-calendar"
 
 // Mock data
 const profileData = {
-  name: "Mehdi El bakouri",
-  profession: "Plombier & Électricien",
+  name: "Hamza Benaarab",
+  profession: "Product Manager",
   avatar: "/placeholder.svg?height=200&width=200",
   rating: 4.9,
   reviewCount: 124,
@@ -68,7 +69,17 @@ const todayStats = {
   messages: 5,
 }
 
-const currentJobs = [
+const currentJobs: {
+  id: number
+  clientName: string
+  clientAvatar: string
+  service: string
+  address: string
+  date: string
+  duration: string
+  status: "ongoing" | "upcoming" | "completed"
+  payment: string
+}[] = [
   {
     id: 1,
     clientName: "Marie Laurent",
@@ -226,6 +237,7 @@ export default function Dashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("all")
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list")
+  const [currentView, setCurrentView] = useState<"dashboard" | "profile" | "settings">("dashboard")
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -275,60 +287,40 @@ export default function Dashboard() {
                   </Avatar>
                   <h3 className="text-lg font-semibold">{profileData.name}</h3>
                   <p className="text-sm text-muted-foreground">{profileData.profession}</p>
-                  <div className="mt-1 flex items-center">
-                    <Star className="mr-1 h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span className="text-sm font-medium">{profileData.rating}</span>
-                    <span className="ml-1 text-xs text-muted-foreground">({profileData.reviewCount} avis)</span>
-                  </div>
                 </div>
 
                 <Separator />
 
                 <nav className="flex flex-col gap-1">
                   <Button
-                    variant="ghost"
+                    variant={currentView === "dashboard" ? "secondary" : "ghost"}
                     className="justify-start gap-3 px-2"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={() => {
+                      setCurrentView("dashboard")
+                      setIsMobileMenuOpen(false)
+                    }}
                   >
                     <Toolbox className="h-5 w-5" />
                     <span>Tableau de bord</span>
                   </Button>
                   <Button
-                    variant="ghost"
+                    variant={currentView === "profile" ? "secondary" : "ghost"}
                     className="justify-start gap-3 px-2"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <Calendar className="h-5 w-5" />
-                    <span>Calendrier</span>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="justify-start gap-3 px-2"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <TrendingUp className="h-5 w-5" />
-                    <span>Revenus</span>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="justify-start gap-3 px-2"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <MessageSquare className="h-5 w-5" />
-                    <span>Messages</span>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="justify-start gap-3 px-2"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={() => {
+                      setCurrentView("profile")
+                      setIsMobileMenuOpen(false)
+                    }}
                   >
                     <User className="h-5 w-5" />
                     <span>Profil</span>
                   </Button>
                   <Button
-                    variant="ghost"
+                    variant={currentView === "settings" ? "secondary" : "ghost"}
                     className="justify-start gap-3 px-2"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={() => {
+                      setCurrentView("settings")
+                      setIsMobileMenuOpen(false)
+                    }}
                   >
                     <Settings className="h-5 w-5" />
                     <span>Paramètres</span>
@@ -426,37 +418,32 @@ export default function Dashboard() {
             </Avatar>
             <h3 className="text-lg font-semibold">{profileData.name}</h3>
             <p className="text-sm text-muted-foreground">{profileData.profession}</p>
-            <div className="mt-1 flex items-center">
-              <Star className="mr-1 h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <span className="text-sm font-medium">{profileData.rating}</span>
-              <span className="ml-1 text-xs text-muted-foreground">({profileData.reviewCount} avis)</span>
-            </div>
           </div>
 
           <Separator />
 
           <nav className="flex flex-col gap-1 p-2">
-            <Button variant="ghost" className="justify-start gap-3 px-3">
+            <Button 
+              variant={currentView === "dashboard" ? "secondary" : "ghost"} 
+              className="justify-start gap-3 px-3"
+              onClick={() => setCurrentView("dashboard")}
+            >
               <Toolbox className="h-5 w-5" />
               <span>Tableau de bord</span>
             </Button>
-            <Button variant="ghost" className="justify-start gap-3 px-3">
-              <Calendar className="h-5 w-5" />
-              <span>Calendrier</span>
-            </Button>
-            <Button onClick={()=>{window.location.href="/dashboard/earnings"}}  variant="ghost" className="justify-start gap-3 px-3">
-              <TrendingUp className="h-5 w-5" />
-              <span>Revenus</span>
-            </Button>
-            <Button onClick={()=>{window.location.href="/dashboard/messages"}} variant="ghost" className="justify-start gap-3 px-3">
-              <MessageSquare className="h-5 w-5" />
-              <span>Messages</span>
-            </Button>
-            <Button variant="ghost" className="justify-start gap-3 px-3">
+            <Button 
+              variant={currentView === "profile" ? "secondary" : "ghost"} 
+              className="justify-start gap-3 px-3"
+              onClick={() => setCurrentView("profile")}
+            >
               <User className="h-5 w-5" />
               <span>Profil</span>
             </Button>
-            <Button variant="ghost" className="justify-start gap-3 px-3">
+            <Button 
+              variant={currentView === "settings" ? "secondary" : "ghost"} 
+              className="justify-start gap-3 px-3"
+              onClick={() => setCurrentView("settings")}
+            >
               <Settings className="h-5 w-5" />
               <span>Paramètres</span>
             </Button>
@@ -475,469 +462,477 @@ export default function Dashboard() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 md:ml-64">
+        <main className="flex-1 md:ml-64 pb-20 md:pb-0">
           <div className="container max-w-6xl px-4 py-6 md:px-6 md:py-8">
-            {/* Welcome Section */}
-            <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
-              <div className="grid gap-6 md:grid-cols-[1fr_auto]">
-                <div>
-                  <h1 className="text-2xl font-bold md:text-3xl">Bonjour, {userName} 👋</h1>
-                  <p className="mt-1 text-muted-foreground">{format(new Date(), "EEEE d MMMM yyyy", { locale: fr })}</p>
-
-                  <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
-                    <div className="rounded-lg bg-blue-50 p-3">
-                      <div className="flex items-center gap-2">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
-                          <Toolbox className="h-5 w-5 text-blue-600" />
+            {currentView === "dashboard" ? (
+              <>
+                {/* Welcome Section */}
+                <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
+                  <div className="grid gap-6 md:grid-cols-[1fr_auto]">
+                    <div>
+                      <h1 className="text-2xl font-bold md:text-3xl">Bonjour, {userName} 👋</h1>
+                      <p className="mt-1 text-muted-foreground">{format(new Date(), "EEEE d MMMM yyyy", { locale: fr })}</p>
+    
+                      <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+                        <div className="rounded-lg bg-blue-50 p-3">
+                          <div className="flex items-center gap-2">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
+                              <Toolbox className="h-5 w-5 text-blue-600" />
+                            </div>
+                            <div>
+                              <p className="text-sm text-muted-foreground">Services aujourd'hui</p>
+                              <p className="text-xl font-bold">{todayStats.jobsToday}</p>
+                            </div>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">Services aujourd'hui</p>
-                          <p className="text-xl font-bold">{todayStats.jobsToday}</p>
+    
+                        <div className="rounded-lg bg-green-50 p-3">
+                          <div className="flex items-center gap-2">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
+                              <FileText className="h-5 w-5 text-green-600" />
+                            </div>
+                            <div>
+                              <p className="text-sm text-muted-foreground">Nouvelles demandes</p>
+                              <p className="text-xl font-bold">{todayStats.newRequests}</p>
+                            </div>
+                          </div>
+                        </div>
+    
+                        <div className="rounded-lg bg-purple-50 p-3">
+                          <div className="flex items-center gap-2">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100">
+                              <DollarSign className="h-5 w-5 text-purple-600" />
+                            </div>
+                            <div>
+                              <p className="text-sm text-muted-foreground">Revenus aujourd'hui</p>
+                              <p className="text-xl font-bold">{todayStats.earnings}</p>
+                            </div>
+                          </div>
+                        </div>
+    
+                        <div className="rounded-lg bg-yellow-50 p-3">
+                          <div className="flex items-center gap-2">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-100">
+                              <MessageSquare className="h-5 w-5 text-yellow-600" />
+                            </div>
+                            <div>
+                              <p className="text-sm text-muted-foreground">Nouveaux messages</p>
+                              <p className="text-xl font-bold">{todayStats.messages}</p>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-
-                    <div className="rounded-lg bg-green-50 p-3">
-                      <div className="flex items-center gap-2">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
-                          <FileText className="h-5 w-5 text-green-600" />
-                        </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">Nouvelles demandes</p>
-                          <p className="text-xl font-bold">{todayStats.newRequests}</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="rounded-lg bg-purple-50 p-3">
-                      <div className="flex items-center gap-2">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100">
-                          <DollarSign className="h-5 w-5 text-purple-600" />
-                        </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">Revenus aujourd'hui</p>
-                          <p className="text-xl font-bold">{todayStats.earnings}</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="rounded-lg bg-yellow-50 p-3">
-                      <div className="flex items-center gap-2">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-100">
-                          <MessageSquare className="h-5 w-5 text-yellow-600" />
-                        </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">Nouveaux messages</p>
-                          <p className="text-xl font-bold">{todayStats.messages}</p>
-                        </div>
-                      </div>
+    
+                    <div className="hidden md:block">
+                      <Card className="overflow-hidden">
+                        <CardContent className="p-0">
+                          <div className="flex items-center gap-4 p-4">
+                            <div className="flex flex-col items-center">
+                              <div className="text-2xl font-bold text-blue-600">{profileData.completedJobs}</div>
+                              <div className="text-xs text-muted-foreground">Services terminés</div>
+                            </div>
+                            <Separator orientation="vertical" className="h-12" />
+                            <div className="flex flex-col items-center">
+                              <div className="text-2xl font-bold text-green-600">{profileData.onTimePercentage}%</div>
+                              <div className="text-xs text-muted-foreground">À l'heure</div>
+                            </div>
+                            <Separator orientation="vertical" className="h-12" />
+                            <div className="flex flex-col items-center">
+                              <div className="text-2xl font-bold text-purple-600">{profileData.responseRate}%</div>
+                              <div className="text-xs text-muted-foreground">Taux de réponse</div>
+                            </div>
+                          </div>
+                          <div className="bg-blue-50 p-4">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <ThumbsUp className="h-5 w-5 text-blue-600" />
+                                <span className="text-sm font-medium">Niveau de confiance</span>
+                              </div>
+                              <span className="text-sm font-medium text-blue-600">Excellent</span>
+                            </div>
+                            <Progress value={95} className="mt-2 h-2" />
+                          </div>
+                        </CardContent>
+                      </Card>
                     </div>
                   </div>
                 </div>
 
-                <div className="hidden md:block">
-                  <Card className="overflow-hidden">
-                    <CardContent className="p-0">
-                      <div className="flex items-center gap-4 p-4">
-                        <div className="flex flex-col items-center">
-                          <div className="text-2xl font-bold text-blue-600">{profileData.completedJobs}</div>
-                          <div className="text-xs text-muted-foreground">Services terminés</div>
+                {/* Current Jobs */}
+                <div className="mb-8">
+                  <div className="mb-4 flex items-center justify-between">
+                    <h2 className="text-xl font-bold">Mes Services</h2>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="gap-2"
+                      onClick={() => setViewMode(viewMode === "list" ? "calendar" : "list")}
+                    >
+                      {viewMode === "calendar" ? (
+                        <>
+                          <Toolbox className="h-4 w-4" />
+                          <span>Voir services</span>
+                        </>
+                      ) : (
+                        <>
+                          <Calendar className="h-4 w-4" />
+                          <span>Voir calendrier</span>
+                        </>
+                      )}
+                    </Button>
+                  </div>
+
+                  {viewMode === "list" ? (
+                    <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="w-full">
+                      <TabsList className="mb-4 grid w-full grid-cols-4 bg-gray-100">
+                        <TabsTrigger value="all">Tous</TabsTrigger>
+                        <TabsTrigger value="ongoing">En cours</TabsTrigger>
+                        <TabsTrigger value="upcoming">À venir</TabsTrigger>
+                        <TabsTrigger value="completed">Terminés</TabsTrigger>
+                      </TabsList>
+
+                      <TabsContent value={activeTab} className="mt-0">
+                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                          {filteredJobs.map((job) => (
+                            <Card key={job.id} className="overflow-hidden">
+                              <CardHeader className="p-4 pb-0">
+                                <div className="flex items-start justify-between">
+                                  <div className="flex items-start gap-3">
+                                    <Avatar className="mt-1 h-10 w-10">
+                                      <AvatarImage src={job.clientAvatar || "/placeholder.svg"} alt={job.clientName} />
+                                      <AvatarFallback>{job.clientName.charAt(0)}</AvatarFallback>
+                                    </Avatar>
+                                    <div>
+                                      <CardTitle className="text-base">{job.clientName}</CardTitle>
+                                      <CardDescription>{job.service}</CardDescription>
+                                    </div>
+                                  </div>
+                                  <Badge
+                                    variant="outline"
+                                    className={`${
+                                      job.status === "ongoing"
+                                        ? "border-blue-200 bg-blue-50 text-blue-700"
+                                        : job.status === "upcoming"
+                                          ? "border-green-200 bg-green-50 text-green-700"
+                                          : "border-gray-200 bg-gray-50 text-gray-700"
+                                    }`}
+                                  >
+                                    {job.status === "ongoing"
+                                      ? "En cours"
+                                      : job.status === "upcoming"
+                                        ? "À venir"
+                                        : "Terminé"}
+                                  </Badge>
+                                </div>
+                              </CardHeader>
+                              <CardContent className="p-4">
+                                <div className="space-y-2 text-sm">
+                                  <div className="flex items-center gap-2">
+                                    <MapPin className="h-4 w-4 text-muted-foreground" />
+                                    <span>{job.address}</span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                                    <span>{format(parseISO(job.date), "d MMMM yyyy", { locale: fr })}</span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <Clock className="h-4 w-4 text-muted-foreground" />
+                                    <span>
+                                      {format(parseISO(job.date), "HH:mm", { locale: fr })} ({job.duration})
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <DollarSign className="h-4 w-4 text-muted-foreground" />
+                                    <span>{job.payment}</span>
+                                  </div>
+                                </div>
+                              </CardContent>
+                              <CardFooter className="flex justify-between border-t border-gray-100 bg-gray-50 p-3">
+                                <Button variant="ghost" size="sm" className="gap-1 text-blue-600 hover:bg-blue-50">
+                                  <MessageSquare className="h-4 w-4" />
+                                  <span>Message</span>
+                                </Button>
+                                <Button variant="ghost" size="sm" className="gap-1">
+                                  <MoreVertical className="h-4 w-4" />
+                                  <span>Détails</span>
+                                </Button>
+                              </CardFooter>
+                            </Card>
+                          ))}
                         </div>
-                        <Separator orientation="vertical" className="h-12" />
-                        <div className="flex flex-col items-center">
-                          <div className="text-2xl font-bold text-green-600">{profileData.onTimePercentage}%</div>
-                          <div className="text-xs text-muted-foreground">À l'heure</div>
-                        </div>
-                        <Separator orientation="vertical" className="h-12" />
-                        <div className="flex flex-col items-center">
-                          <div className="text-2xl font-bold text-purple-600">{profileData.responseRate}%</div>
-                          <div className="text-xs text-muted-foreground">Taux de réponse</div>
-                        </div>
+                      </TabsContent>
+                    </Tabs>
+                  ) : (
+                    <JobCalendar jobs={currentJobs} />
+                  )}
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {/* New Job Requests */}
+                  <Card className="lg:col-span-2">
+                    <CardHeader className="flex flex-row items-center justify-between pb-2">
+                      <div>
+                        <CardTitle>Nouvelles Demandes</CardTitle>
+                        <CardDescription>Demandes de service en attente</CardDescription>
                       </div>
-                      <div className="bg-blue-50 p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <ThumbsUp className="h-5 w-5 text-blue-600" />
-                            <span className="text-sm font-medium">Niveau de confiance</span>
+                      <Button variant="ghost" size="sm" className="gap-1">
+                        <span>Voir tout</span>
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {jobRequests.map((request) => (
+                          <div key={request.id} className="rounded-lg border p-4">
+                            <div className="mb-3 flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <Avatar className="h-10 w-10">
+                                  <AvatarImage src={request.clientAvatar || "/placeholder.svg"} alt={request.clientName} />
+                                  <AvatarFallback>{request.clientName.charAt(0)}</AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <p className="font-medium">{request.clientName}</p>
+                                  <p className="text-sm text-muted-foreground">{request.service}</p>
+                                </div>
+                              </div>
+                              <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                                Nouvelle
+                              </Badge>
+                            </div>
+                            <div className="mb-3 space-y-2 text-sm">
+                              <div className="flex items-center gap-2">
+                                <MapPin className="h-4 w-4 text-muted-foreground" />
+                                <span>{request.address}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Calendar className="h-4 w-4 text-muted-foreground" />
+                                <span>{format(parseISO(request.date), "d MMMM yyyy", { locale: fr })}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Clock className="h-4 w-4 text-muted-foreground" />
+                                <span>{format(parseISO(request.date), "HH:mm", { locale: fr })}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <DollarSign className="h-4 w-4 text-muted-foreground" />
+                                <span>{request.payment}</span>
+                              </div>
+                            </div>
+                            <p className="mb-4 text-sm">{request.description}</p>
+                            <div className="flex gap-2">
+                              <Button className="flex-1 gap-1 bg-green-600 hover:bg-green-700">
+                                <CheckCircle className="h-4 w-4" />
+                                <span>Accepter</span>
+                              </Button>
+                              <Button variant="outline" className="flex-1 gap-1 text-red-600 hover:text-red-700">
+                                <X className="h-4 w-4" />
+                                <span>Refuser</span>
+                              </Button>
+                            </div>
                           </div>
-                          <span className="text-sm font-medium text-blue-600">Excellent</span>
-                        </div>
-                        <Progress value={95} className="mt-2 h-2" />
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Earnings Analytics */}
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle>Revenus</CardTitle>
+                      <CardDescription>Aperçu de vos revenus</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Tabs defaultValue="weekly">
+                        <TabsList className="mb-4 grid w-full grid-cols-2">
+                          <TabsTrigger value="weekly">Hebdomadaire</TabsTrigger>
+                          <TabsTrigger value="monthly">Mensuel</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="weekly">
+                          <div className="mb-4 flex items-center justify-between">
+                            <div>
+                              <p className="text-sm text-muted-foreground">Cette semaine</p>
+                              <p className="text-2xl font-bold">€660</p>
+                            </div>
+                            <div className="flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs text-green-600">
+                              <TrendingUp className="h-3 w-3" />
+                              <span>+12%</span>
+                            </div>
+                          </div>
+                          <div className="h-[200px] w-full">
+                            <ChartContainer
+                              config={{
+                                amount: {
+                                  label: "Montant (€)",
+                                  color: "hsl(var(--chart-1))",
+                                },
+                              }}
+                            >
+                              <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={earningsData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                                  <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                                  <XAxis dataKey="day" tick={{ fontSize: 12 }} />
+                                  <YAxis tick={{ fontSize: 12 }} />
+                                  <ChartTooltip content={<ChartTooltipContent />} />
+                                  <Line
+                                    type="monotone"
+                                    dataKey="amount"
+                                    stroke="var(--color-amount)"
+                                    strokeWidth={2}
+                                    dot={{ r: 4 }}
+                                    activeDot={{ r: 6 }}
+                                  />
+                                </LineChart>
+                              </ResponsiveContainer>
+                            </ChartContainer>
+                          </div>
+                        </TabsContent>
+                        <TabsContent value="monthly">
+                          <div className="mb-4 flex items-center justify-between">
+                            <div>
+                              <p className="text-sm text-muted-foreground">Ce mois</p>
+                              <p className="text-2xl font-bold">€2,800</p>
+                            </div>
+                            <div className="flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs text-green-600">
+                              <TrendingUp className="h-3 w-3" />
+                              <span>+8%</span>
+                            </div>
+                          </div>
+                          <div className="h-[200px] w-full">
+                            <ChartContainer
+                              config={{
+                                amount: {
+                                  label: "Montant (€)",
+                                  color: "hsl(var(--chart-1))",
+                                },
+                              }}
+                            >
+                              <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={monthlyEarningsData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                                  <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                                  <XAxis dataKey="week" tick={{ fontSize: 12 }} />
+                                  <YAxis tick={{ fontSize: 12 }} />
+                                  <ChartTooltip content={<ChartTooltipContent />} />
+                                  <Line
+                                    type="monotone"
+                                    dataKey="amount"
+                                    stroke="var(--color-amount)"
+                                    strokeWidth={2}
+                                    dot={{ r: 4 }}
+                                    activeDot={{ r: 6 }}
+                                  />
+                                </LineChart>
+                              </ResponsiveContainer>
+                            </ChartContainer>
+                          </div>
+                        </TabsContent>
+                      </Tabs>
+                    </CardContent>
+                    <CardFooter className="border-t pt-4">
+                      <Button onClick={()=> { window.location.href = "/dashboard/earnings"}} variant="outline" className="w-full">
+                        Voir rapport détaillé
+                      </Button>
+                    </CardFooter>
+                  </Card>
+
+                  {/* Messages */}
+                  <Card>
+                    <CardHeader className="flex flex-row items-center justify-between pb-2">
+                      <div>
+                        <CardTitle>Messages récents</CardTitle>
+                        <CardDescription>Conversations avec vos clients</CardDescription>
+                      </div>
+                      <Button variant="ghost" size="sm" className="gap-1">
+                        <span>Voir tout</span>
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {messages.map((message) => (
+                          <div
+                            key={message.id}
+                            className={`flex gap-3 rounded-lg p-3 ${message.unread ? "bg-blue-50" : "bg-gray-50"}`}
+                          >
+                            <Avatar className="h-10 w-10">
+                              <AvatarImage src={message.avatar || "/placeholder.svg"} alt={message.sender} />
+                              <AvatarFallback>{message.sender.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1">
+                              <div className="mb-1 flex items-center justify-between">
+                                <p className="font-medium">{message.sender}</p>
+                                <p className="text-xs text-muted-foreground">{message.time}</p>
+                              </div>
+                              <p className="text-sm">{message.message}</p>
+                            </div>
+                            {message.unread && <div className="h-2 w-2 rounded-full bg-blue-600"></div>}
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                    <CardFooter className="border-t pt-4">
+                      <Button className="w-full gap-2 bg-blue-600 hover:bg-blue-700">
+                        <MessageSquare className="h-4 w-4" />
+                        <span>Ouvrir la messagerie</span>
+                      </Button>
+                    </CardFooter>
+                  </Card>
+
+                  {/* Notifications */}
+                  <Card className="lg:col-span-2">
+                    <CardHeader className="flex flex-row items-center justify-between pb-2">
+                      <div>
+                        <CardTitle>Activité récente</CardTitle>
+                        <CardDescription>Dernières notifications et mises à jour</CardDescription>
+                      </div>
+                      <Button variant="ghost" size="sm" className="gap-1">
+                        <span>Voir tout</span>
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {notifications.map((notification) => (
+                          <div key={notification.id} className="flex items-start gap-3 rounded-lg border p-3">
+                            <div
+                              className={`flex h-10 w-10 items-center justify-center rounded-full ${
+                                notification.type === "request"
+                                  ? "bg-blue-100 text-blue-600"
+                                  : notification.type === "message"
+                                    ? "bg-green-100 text-green-600"
+                                    : notification.type === "payment"
+                                      ? "bg-purple-100 text-purple-600"
+                                      : "bg-yellow-100 text-yellow-600"
+                              }`}
+                            >
+                              {notification.type === "request" ? (
+                                <FileText className="h-5 w-5" />
+                              ) : notification.type === "message" ? (
+                                <MessageSquare className="h-5 w-5" />
+                              ) : notification.type === "payment" ? (
+                                <DollarSign className="h-5 w-5" />
+                              ) : (
+                                <Star className="h-5 w-5" />
+                              )}
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium">{notification.message}</p>
+                              <p className="text-sm text-muted-foreground">{notification.time}</p>
+                            </div>
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
                       </div>
                     </CardContent>
                   </Card>
                 </div>
-              </div>
-            </div>
-
-            {/* Current Jobs */}
-            <div className="mb-8">
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-xl font-bold">Mes Services</h2>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                  onClick={() => setViewMode(viewMode === "list" ? "calendar" : "list")}
-                >
-                  {viewMode === "calendar" ? (
-                    <>
-                      <Toolbox className="h-4 w-4" />
-                      <span>Voir services</span>
-                    </>
-                  ) : (
-                    <>
-                      <Calendar className="h-4 w-4" />
-                      <span>Voir calendrier</span>
-                    </>
-                  )}
-                </Button>
-              </div>
-
-              {viewMode === "list" ? (
-                <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="w-full">
-                  <TabsList className="mb-4 grid w-full grid-cols-4 bg-gray-100">
-                    <TabsTrigger value="all">Tous</TabsTrigger>
-                    <TabsTrigger value="ongoing">En cours</TabsTrigger>
-                    <TabsTrigger value="upcoming">À venir</TabsTrigger>
-                    <TabsTrigger value="completed">Terminés</TabsTrigger>
-                  </TabsList>
-
-                  <TabsContent value={activeTab} className="mt-0">
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                      {filteredJobs.map((job) => (
-                        <Card key={job.id} className="overflow-hidden">
-                          <CardHeader className="p-4 pb-0">
-                            <div className="flex items-start justify-between">
-                              <div className="flex items-start gap-3">
-                                <Avatar className="mt-1 h-10 w-10">
-                                  <AvatarImage src={job.clientAvatar || "/placeholder.svg"} alt={job.clientName} />
-                                  <AvatarFallback>{job.clientName.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                                <div>
-                                  <CardTitle className="text-base">{job.clientName}</CardTitle>
-                                  <CardDescription>{job.service}</CardDescription>
-                                </div>
-                              </div>
-                              <Badge
-                                variant="outline"
-                                className={`${
-                                  job.status === "ongoing"
-                                    ? "border-blue-200 bg-blue-50 text-blue-700"
-                                    : job.status === "upcoming"
-                                      ? "border-green-200 bg-green-50 text-green-700"
-                                      : "border-gray-200 bg-gray-50 text-gray-700"
-                                }`}
-                              >
-                                {job.status === "ongoing"
-                                  ? "En cours"
-                                  : job.status === "upcoming"
-                                    ? "À venir"
-                                    : "Terminé"}
-                              </Badge>
-                            </div>
-                          </CardHeader>
-                          <CardContent className="p-4">
-                            <div className="space-y-2 text-sm">
-                              <div className="flex items-center gap-2">
-                                <MapPin className="h-4 w-4 text-muted-foreground" />
-                                <span>{job.address}</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Calendar className="h-4 w-4 text-muted-foreground" />
-                                <span>{format(parseISO(job.date), "d MMMM yyyy", { locale: fr })}</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Clock className="h-4 w-4 text-muted-foreground" />
-                                <span>
-                                  {format(parseISO(job.date), "HH:mm", { locale: fr })} ({job.duration})
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <DollarSign className="h-4 w-4 text-muted-foreground" />
-                                <span>{job.payment}</span>
-                              </div>
-                            </div>
-                          </CardContent>
-                          <CardFooter className="flex justify-between border-t border-gray-100 bg-gray-50 p-3">
-                            <Button variant="ghost" size="sm" className="gap-1 text-blue-600 hover:bg-blue-50">
-                              <MessageSquare className="h-4 w-4" />
-                              <span>Message</span>
-                            </Button>
-                            <Button variant="ghost" size="sm" className="gap-1">
-                              <MoreVertical className="h-4 w-4" />
-                              <span>Détails</span>
-                            </Button>
-                          </CardFooter>
-                        </Card>
-                      ))}
-                    </div>
-                  </TabsContent>
-                </Tabs>
-              ) : (
-                <JobCalendar jobs={currentJobs} />
-              )}
-            </div>
-
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {/* New Job Requests */}
-              <Card className="lg:col-span-2">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <div>
-                    <CardTitle>Nouvelles Demandes</CardTitle>
-                    <CardDescription>Demandes de service en attente</CardDescription>
-                  </div>
-                  <Button variant="ghost" size="sm" className="gap-1">
-                    <span>Voir tout</span>
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {jobRequests.map((request) => (
-                      <div key={request.id} className="rounded-lg border p-4">
-                        <div className="mb-3 flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <Avatar className="h-10 w-10">
-                              <AvatarImage src={request.clientAvatar || "/placeholder.svg"} alt={request.clientName} />
-                              <AvatarFallback>{request.clientName.charAt(0)}</AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <p className="font-medium">{request.clientName}</p>
-                              <p className="text-sm text-muted-foreground">{request.service}</p>
-                            </div>
-                          </div>
-                          <Badge variant="outline" className="bg-blue-50 text-blue-700">
-                            Nouvelle
-                          </Badge>
-                        </div>
-                        <div className="mb-3 space-y-2 text-sm">
-                          <div className="flex items-center gap-2">
-                            <MapPin className="h-4 w-4 text-muted-foreground" />
-                            <span>{request.address}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Calendar className="h-4 w-4 text-muted-foreground" />
-                            <span>{format(parseISO(request.date), "d MMMM yyyy", { locale: fr })}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Clock className="h-4 w-4 text-muted-foreground" />
-                            <span>{format(parseISO(request.date), "HH:mm", { locale: fr })}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <DollarSign className="h-4 w-4 text-muted-foreground" />
-                            <span>{request.payment}</span>
-                          </div>
-                        </div>
-                        <p className="mb-4 text-sm">{request.description}</p>
-                        <div className="flex gap-2">
-                          <Button className="flex-1 gap-1 bg-green-600 hover:bg-green-700">
-                            <CheckCircle className="h-4 w-4" />
-                            <span>Accepter</span>
-                          </Button>
-                          <Button variant="outline" className="flex-1 gap-1 text-red-600 hover:text-red-700">
-                            <X className="h-4 w-4" />
-                            <span>Refuser</span>
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Earnings Analytics */}
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle>Revenus</CardTitle>
-                  <CardDescription>Aperçu de vos revenus</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Tabs defaultValue="weekly">
-                    <TabsList className="mb-4 grid w-full grid-cols-2">
-                      <TabsTrigger value="weekly">Hebdomadaire</TabsTrigger>
-                      <TabsTrigger value="monthly">Mensuel</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="weekly">
-                      <div className="mb-4 flex items-center justify-between">
-                        <div>
-                          <p className="text-sm text-muted-foreground">Cette semaine</p>
-                          <p className="text-2xl font-bold">€660</p>
-                        </div>
-                        <div className="flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs text-green-600">
-                          <TrendingUp className="h-3 w-3" />
-                          <span>+12%</span>
-                        </div>
-                      </div>
-                      <div className="h-[200px] w-full">
-                        <ChartContainer
-                          config={{
-                            amount: {
-                              label: "Montant (€)",
-                              color: "hsl(var(--chart-1))",
-                            },
-                          }}
-                        >
-                          <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={earningsData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
-                              <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-                              <XAxis dataKey="day" tick={{ fontSize: 12 }} />
-                              <YAxis tick={{ fontSize: 12 }} />
-                              <ChartTooltip content={<ChartTooltipContent />} />
-                              <Line
-                                type="monotone"
-                                dataKey="amount"
-                                stroke="var(--color-amount)"
-                                strokeWidth={2}
-                                dot={{ r: 4 }}
-                                activeDot={{ r: 6 }}
-                              />
-                            </LineChart>
-                          </ResponsiveContainer>
-                        </ChartContainer>
-                      </div>
-                    </TabsContent>
-                    <TabsContent value="monthly">
-                      <div className="mb-4 flex items-center justify-between">
-                        <div>
-                          <p className="text-sm text-muted-foreground">Ce mois</p>
-                          <p className="text-2xl font-bold">€2,800</p>
-                        </div>
-                        <div className="flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs text-green-600">
-                          <TrendingUp className="h-3 w-3" />
-                          <span>+8%</span>
-                        </div>
-                      </div>
-                      <div className="h-[200px] w-full">
-                        <ChartContainer
-                          config={{
-                            amount: {
-                              label: "Montant (€)",
-                              color: "hsl(var(--chart-1))",
-                            },
-                          }}
-                        >
-                          <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={monthlyEarningsData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
-                              <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-                              <XAxis dataKey="week" tick={{ fontSize: 12 }} />
-                              <YAxis tick={{ fontSize: 12 }} />
-                              <ChartTooltip content={<ChartTooltipContent />} />
-                              <Line
-                                type="monotone"
-                                dataKey="amount"
-                                stroke="var(--color-amount)"
-                                strokeWidth={2}
-                                dot={{ r: 4 }}
-                                activeDot={{ r: 6 }}
-                              />
-                            </LineChart>
-                          </ResponsiveContainer>
-                        </ChartContainer>
-                      </div>
-                    </TabsContent>
-                  </Tabs>
-                </CardContent>
-                <CardFooter className="border-t pt-4">
-                  <Button onClick={()=> { window.location.href = "/dashboard/earnings"}} variant="outline" className="w-full">
-                    Voir rapport détaillé
-                  </Button>
-                </CardFooter>
-              </Card>
-
-              {/* Messages */}
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <div>
-                    <CardTitle>Messages récents</CardTitle>
-                    <CardDescription>Conversations avec vos clients</CardDescription>
-                  </div>
-                  <Button variant="ghost" size="sm" className="gap-1">
-                    <span>Voir tout</span>
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {messages.map((message) => (
-                      <div
-                        key={message.id}
-                        className={`flex gap-3 rounded-lg p-3 ${message.unread ? "bg-blue-50" : "bg-gray-50"}`}
-                      >
-                        <Avatar className="h-10 w-10">
-                          <AvatarImage src={message.avatar || "/placeholder.svg"} alt={message.sender} />
-                          <AvatarFallback>{message.sender.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                          <div className="mb-1 flex items-center justify-between">
-                            <p className="font-medium">{message.sender}</p>
-                            <p className="text-xs text-muted-foreground">{message.time}</p>
-                          </div>
-                          <p className="text-sm">{message.message}</p>
-                        </div>
-                        {message.unread && <div className="h-2 w-2 rounded-full bg-blue-600"></div>}
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-                <CardFooter className="border-t pt-4">
-                  <Button className="w-full gap-2 bg-blue-600 hover:bg-blue-700">
-                    <MessageSquare className="h-4 w-4" />
-                    <span>Ouvrir la messagerie</span>
-                  </Button>
-                </CardFooter>
-              </Card>
-
-              {/* Notifications */}
-              <Card className="lg:col-span-2">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <div>
-                    <CardTitle>Activité récente</CardTitle>
-                    <CardDescription>Dernières notifications et mises à jour</CardDescription>
-                  </div>
-                  <Button variant="ghost" size="sm" className="gap-1">
-                    <span>Voir tout</span>
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {notifications.map((notification) => (
-                      <div key={notification.id} className="flex items-start gap-3 rounded-lg border p-3">
-                        <div
-                          className={`flex h-10 w-10 items-center justify-center rounded-full ${
-                            notification.type === "request"
-                              ? "bg-blue-100 text-blue-600"
-                              : notification.type === "message"
-                                ? "bg-green-100 text-green-600"
-                                : notification.type === "payment"
-                                  ? "bg-purple-100 text-purple-600"
-                                  : "bg-yellow-100 text-yellow-600"
-                          }`}
-                        >
-                          {notification.type === "request" ? (
-                            <FileText className="h-5 w-5" />
-                          ) : notification.type === "message" ? (
-                            <MessageSquare className="h-5 w-5" />
-                          ) : notification.type === "payment" ? (
-                            <DollarSign className="h-5 w-5" />
-                          ) : (
-                            <Star className="h-5 w-5" />
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <p className="font-medium">{notification.message}</p>
-                          <p className="text-sm text-muted-foreground">{notification.time}</p>
-                        </div>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+              </>
+            ) : currentView === "profile" ? (
+              <ProfileView profileData={profileData} />
+            ) : (
+              <SettingsView />
+            )}
           </div>
         </main>
       </div>
@@ -945,7 +940,11 @@ export default function Dashboard() {
       {/* Mobile Navigation */}
       <div className="fixed bottom-0 left-0 right-0 z-50 border-t bg-white md:hidden">
         <div className="flex items-center justify-around">
-          <Button variant="ghost" className="flex flex-1 flex-col items-center justify-center py-3">
+          <Button 
+            variant="ghost" 
+            className={`flex flex-1 flex-col items-center justify-center py-3 ${currentView === "dashboard" ? "text-blue-600" : ""}`}
+            onClick={() => setCurrentView("dashboard")}
+          >
             <Toolbox className="h-5 w-5" />
             <span className="mt-1 text-xs">Tableau</span>
           </Button>
@@ -961,12 +960,188 @@ export default function Dashboard() {
             <TrendingUp  className="h-5 w-5" />
             <span className="mt-1 text-xs">Revenus</span>
           </Button>
-          <Button variant="ghost" className="flex flex-1 flex-col items-center justify-center py-3">
+          <Button 
+            variant="ghost" 
+            className={`flex flex-1 flex-col items-center justify-center py-3 ${currentView === "profile" ? "text-blue-600" : ""}`}
+            onClick={() => setCurrentView("profile")}
+          >
             <User className="h-5 w-5" />
             <span className="mt-1 text-xs">Profil</span>
           </Button>
         </div>
       </div>
+    </div>
+  )
+}
+
+function ProfileView({ profileData }: { profileData: any }) {
+  return (
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold">Mon Profil</h2>
+        <Button variant="outline">Modifier le profil</Button>
+      </div>
+      
+      <div className="grid gap-6 md:grid-cols-3">
+        <Card className="md:col-span-1">
+          <CardHeader>
+            <CardTitle>Photo de profil</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center">
+            <Avatar className="h-32 w-32 mb-4">
+              <AvatarImage src={profileData.avatar} />
+              <AvatarFallback>{profileData.name.charAt(0)}</AvatarFallback>
+            </Avatar>
+            <Button variant="ghost" size="sm">Changer la photo</Button>
+          </CardContent>
+        </Card>
+
+        <Card className="md:col-span-2">
+          <CardHeader>
+            <CardTitle>Informations personnelles</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-muted-foreground">Nom complet</p>
+                <p className="font-medium">{profileData.name}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-muted-foreground">Profession</p>
+                <p className="font-medium">{profileData.profession}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-muted-foreground">Email</p>
+                <p className="font-medium">contact@fastbrikol.com</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-muted-foreground">Téléphone</p>
+                <p className="font-medium">+33 6 12 34 56 78</p>
+              </div>
+            </div>
+            <Separator />
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-muted-foreground">Adresse</p>
+              <p className="font-medium">75001 Paris, France</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-muted-foreground">Biographie</p>
+              <p className="text-sm">Artisan passionné avec plus de 10 ans d'expérience dans la rénovation et les services à domicile.</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Compétences & Spécialisations</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex wrap gap-2">
+            {["Plomberie", "Électricité", "Peinture", "Rénovation", "Serrurerie"].map(skill => (
+              <Badge key={skill} variant="secondary" className="px-3 py-1">
+                {skill}
+              </Badge>
+            ))}
+            <Button variant="outline" size="sm" className="h-8 border-dashed">
+              + Ajouter
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+function SettingsView() {
+  return (
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <h2 className="text-2xl font-bold">Paramètres</h2>
+      
+      <Tabs defaultValue="account" className="w-full">
+        <TabsList className="bg-gray-100">
+          <TabsTrigger value="account">Compte</TabsTrigger>
+          <TabsTrigger value="notifications">Notifications</TabsTrigger>
+          <TabsTrigger value="security">Sécurité</TabsTrigger>
+          <TabsTrigger value="billing">Facturation</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="account" className="mt-6 space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Préférences du compte</CardTitle>
+              <CardDescription>Gérez les paramètres de votre compte.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Langue</p>
+                  <p className="text-sm text-muted-foreground">Français (France)</p>
+                </div>
+                <Button variant="outline" size="sm">Modifier</Button>
+              </div>
+              <Separator />
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Fuseau horaire</p>
+                  <p className="text-sm text-muted-foreground">(GMT+01:00) Paris</p>
+                </div>
+                <Button variant="outline" size="sm">Modifier</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="notifications" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Notifications par email</CardTitle>
+              <CardDescription>Choisissez ce que vous souhaitez recevoir.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {[
+                { label: "Nouvelles demandes de service", desc: "Recevoir un email lorsqu'un client vous contacte." },
+                { label: "Mises à jour des services", desc: "Notifications sur l'état de vos services en cours." },
+                { label: "Promotions et offres", desc: "Restez informé des dernières nouveautés." }
+              ].map((item, i) => (
+                <div key={i} className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">{item.label}</p>
+                    <p className="text-sm text-muted-foreground">{item.desc}</p>
+                  </div>
+                  <Switch defaultChecked />
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="security" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Sécurité</CardTitle>
+              <CardDescription>Protégez votre compte.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Mot de passe</p>
+                  <p className="text-sm text-muted-foreground">Dernière modification il y a 3 mois</p>
+                </div>
+                <Button variant="outline" size="sm">Changer</Button>
+              </div>
+              <Separator />
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Authentification à deux facteurs</p>
+                  <p className="text-sm text-muted-foreground">Non activée</p>
+                </div>
+                <Button variant="outline" size="sm">Activer</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

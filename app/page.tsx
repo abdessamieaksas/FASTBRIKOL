@@ -1,3 +1,5 @@
+"use client"
+import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import {
@@ -17,13 +19,25 @@ import {
   User,
   Briefcase,
 } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { NavBar } from "@/components/nav-bar"
+import { Footer } from "@/components/footer"
 
 export default function LandingPage() {
+  const router = useRouter()
+  const [searchQuery, setSearchQuery] = useState("")
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      router.push(`/jobs?query=${encodeURIComponent(searchQuery.trim())}`)
+    }
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       <NavBar />
@@ -56,39 +70,37 @@ export default function LandingPage() {
 
                 <div className="w-full max-w-md space-y-4">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-400 rounded-lg blur opacity-20 animate-pulse"></div>
-                    <div className="relative bg-white p-2 rounded-lg shadow-lg">
-                      <div className="flex">
-                        <div className="relative flex-1">
-                          <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
-                          <Input
-                            type="text"
-                            placeholder="What service do you need?"
-                            className="w-full pl-10 pr-20 py-6 text-base rounded-l-md rounded-r-none border-r-0"
-                          />
-                        </div>
-                        <Button
-                          size="lg"
-                          className="bg-blue-600 hover:bg-blue-700 rounded-l-none px-6 py-6 text-base font-medium"
-                        >
-                          Book a Service
-                        </Button>
+                    <form onSubmit={handleSearch} className="flex flex-col sm:flex-row shadow-2xl rounded-xl overflow-hidden border-4 border-white/20">
+                      <div className="relative flex-grow">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <Input
+                          type="text"
+                          placeholder="What service do you need? (e.g. plumbing)"
+                          className="pl-12 py-6 text-base border-0 focus-visible:ring-0 rounded-none w-full"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                        />
                       </div>
-                      <div className="flex flex-wrap gap-2 mt-3 px-3">
-                        <span className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full hover:bg-blue-100 cursor-pointer transition-colors">
-                          Plumbing
-                        </span>
-                        <span className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full hover:bg-blue-100 cursor-pointer transition-colors">
-                          Electrical
-                        </span>
-                        <span className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full hover:bg-blue-100 cursor-pointer transition-colors">
-                          Carpentry
-                        </span>
-                        <span className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full hover:bg-blue-100 cursor-pointer transition-colors">
-                          Painting
-                        </span>
-                      </div>
-                    </div>
+                      <Button
+                        type="submit"
+                        size="lg"
+                        className="bg-blue-600 hover:bg-blue-700 rounded-none px-6 py-6 text-base font-medium"
+                      >
+                        Search
+                      </Button>
+                    </form>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-3 px-3">
+                    <span className="text-sm text-blue-100/80 mr-2 flex items-center">Popular:</span>
+                    {["Plumbing", "Electrical", "Gardening", "Cleaning"].map((cat) => (
+                      <Link 
+                        key={cat} 
+                        href={`/post-job?category=${cat.toLowerCase()}`}
+                        className="text-xs bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full border border-white/10 transition-colors"
+                      >
+                        {cat}
+                      </Link>
+                    ))}
                   </div>
 
                   <div className="flex items-center justify-between text-sm text-muted-foreground">
@@ -248,8 +260,11 @@ export default function LandingPage() {
                     <Button
                       variant="link"
                       className="group flex items-center gap-1 p-0 text-blue-600 transition-all hover:gap-2"
+                      asChild
                     >
-                      Book Now <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      <Link href={`/post-job?category=${service.title.toLowerCase()}`}>
+                        Book Now <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </Link>
                     </Button>
                   </CardContent>
                 </Card>
@@ -261,8 +276,11 @@ export default function LandingPage() {
                 variant="outline"
                 size="lg"
                 className="group border-blue-600 text-blue-600 hover:bg-blue-50 transition-all"
+                asChild
               >
-                View All Services <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                <Link href="/jobs">
+                  View All Services <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
               </Button>
             </div>
           </div>
@@ -320,7 +338,9 @@ export default function LandingPage() {
                 </div>
 
                 <div className="mt-10">
-                  <Button className="bg-blue-600 hover:bg-blue-700">Get Started Today</Button>
+                  <Button className="bg-blue-600 hover:bg-blue-700" asChild>
+                    <Link href="/jobs">Get Started Today</Link>
+                  </Button>
                 </div>
               </div>
 
@@ -430,7 +450,9 @@ export default function LandingPage() {
               <p className="mb-6 max-w-2xl text-muted-foreground">
                 Join thousands of satisfied homeowners who trust FASTBRIKOL for their home service needs.
               </p>
-              <Button className="bg-blue-600 hover:bg-blue-700">Book a Service Today</Button>
+              <Button className="bg-blue-600 hover:bg-blue-700" asChild>
+                <Link href="/post-job">Book a Service Today</Link>
+              </Button>
             </div>
           </div>
         </section>
@@ -562,21 +584,22 @@ export default function LandingPage() {
                   minutes.
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-4 mt-4">
+                <div className="flex flex-wrap gap-4 scroll-reveal">
                     <Button
                       size="lg"
-                      variant="default"
-                      className="bg-white text-blue-700 hover:bg-blue-50 text-base py-6"
+                      className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-blue-500/30 transition-all font-semibold px-8"
+                      asChild
                     >
-                      Book a Service
+                      <Link href="/register?role=offer-services">Become a Provider</Link>
                     </Button>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="bg-transparent text-white border-white hover:bg-white/20 text-base py-6"
-                  >
-                    Become a Provider
-                  </Button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white hover:text-blue-600 transition-all font-semibold px-8"
+                      asChild
+                    >
+                      <Link href="/jobs">Browse Categories</Link>
+                    </Button>
                 </div>
 
                 <div className="flex items-center gap-4 mt-4">
@@ -664,189 +687,7 @@ export default function LandingPage() {
           </div>
         </section>
       </main>
-
-      {/* Footer */}
-      <footer className="w-full border-t py-12 md:py-16 bg-[#111827] text-white">
-        <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center justify-center mb-12 text-center">
-            <div className="flex items-center gap-2 mb-4">
-              <Wrench className="h-8 w-8 text-blue-400" />
-              <span className="text-2xl font-bold">FASTBRIKOL</span>
-            </div>
-            <p className="max-w-md text-gray-400">
-              Connecting you with skilled professionals for all your home service needs.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5">
-            <div className="col-span-2 lg:col-span-2">
-              <h4 className="text-lg font-bold mb-4">Subscribe to our newsletter</h4>
-              <p className="text-sm text-gray-400 mb-4">
-                Get the latest news, updates and special offers delivered directly to your inbox.
-              </p>
-              <div className="flex gap-2">
-                <Input
-                  type="email"
-                  placeholder="Your email address"
-                  className="bg-gray-800 border-gray-700 text-white"
-                />
-                <Button className="bg-blue-600 hover:bg-blue-700">Subscribe</Button>
-              </div>
-            </div>
-
-            <div>
-              <h4 className="text-sm font-bold mb-4">Services</h4>
-              <ul className="space-y-3 text-sm">
-                <li>
-                  <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Plumbing
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Electrical
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Carpentry
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Cleaning
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-sm font-bold mb-4">Company</h4>
-              <ul className="space-y-3 text-sm">
-                <li>
-                  <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Careers
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Blog
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Press
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-sm font-bold mb-4">Legal</h4>
-              <ul className="space-y-3 text-sm">
-                <li>
-                  <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Terms of Service
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Cookie Policy
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-12 border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-gray-400">© {new Date().getFullYear()} FASTBRIKOL. All rights reserved.</p>
-            <div className="flex gap-6 mt-4 md:mt-0">
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                <span className="sr-only">Facebook</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-5 w-5"
-                >
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                </svg>
-              </Link>
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                <span className="sr-only">Twitter</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-5 w-5"
-                >
-                  <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
-                </svg>
-              </Link>
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                <span className="sr-only">Instagram</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-5 w-5"
-                >
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                </svg>
-              </Link>
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                <span className="sr-only">LinkedIn</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-5 w-5"
-                >
-                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                  <rect x="2" y="9" width="4" height="12"></rect>
-                  <circle cx="4" cy="4" r="2"></circle>
-                </svg>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

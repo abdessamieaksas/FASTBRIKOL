@@ -30,6 +30,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
+import { Footer } from "@/components/footer"
 
 // Animation variants
 const fadeInUp: Variants = {
@@ -1142,6 +1143,7 @@ export default function HowItWorksPage() {
           </div>
         </div>
       </AnimatedSection>
+      <Footer />
     </div>
   )
 }

@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { Filter, Grid3X3, ListFilter, Plus, Search, SlidersHorizontal } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -12,6 +13,7 @@ import { JobCard } from "@/components/job-card"
 import { JobList } from "@/components/job-list"
 import { CategoryPills } from "@/components/category-pills"
 import { NavBar } from "@/components/nav-bar"
+import { Footer } from "@/components/footer"
 
 // Categories for filtering
 const categories = [
@@ -217,8 +219,20 @@ const jobsData = [
 ]
 
 export default function JobsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <JobsContent />
+    </Suspense>
+  )
+}
+
+function JobsContent() {
+  const searchParams = useSearchParams()
+  const urlQuery = searchParams.get("query") || ""
+  const urlCategory = searchParams.get("category") || ""
+
   // State for search query
-  const [searchQuery, setSearchQuery] = useState("")
+  const [searchQuery, setSearchQuery] = useState(urlQuery)
 
   // Real DB state
   const [dbJobs, setDbJobs] = useState<any[]>([])
@@ -249,7 +263,7 @@ export default function JobsPage() {
   const [filteredJobs, setFilteredJobs] = useState<any[]>([])
 
   // State for selected category from pills
-  const [selectedCategory, setSelectedCategory] = useState("All Categories")
+  const [selectedCategory, setSelectedCategory] = useState(urlCategory || "All Categories")
 
   // Fetch jobs from database on mount
   useEffect(() => {
@@ -262,7 +276,7 @@ export default function JobsPage() {
           const mappedJobs = data.map((job: any) => ({
             id: job.id,
             title: job.title,
-            category: job.category ? job.category.charAt(0).toUpperCase() + job.category.slice(1) : "Other",
+            category: job.category ? job.category.charAt(0).toUpperCase() + job.category.slice(1).toLowerCase() : "Other",
             location: job.location,
             rate: `$${job.budgetMin}-${job.budgetMax}`,
             rateValue: job.budgetMax,
@@ -468,6 +482,10 @@ export default function JobsPage() {
                   size="lg"
                   variant="outline"
                   className="bg-white/20 backdrop-blur-sm text-white border-white/30 hover:bg-white/30 rounded-full px-6 font-medium"
+                  onClick={() => {
+                    const el = document.getElementById("categories-section");
+                    el?.scrollIntoView({ behavior: "smooth" });
+                  }}
                 >
                   <Filter className="mr-2 h-5 w-5" />
                   Browse Categories
@@ -490,7 +508,7 @@ export default function JobsPage() {
       </div>
 
       {/* Category pills */}
-      <div className="container mx-auto px-4 -mt-6 relative z-20">
+      <div id="categories-section" className="container mx-auto px-4 -mt-6 relative z-20">
         <div className="bg-white rounded-2xl shadow-xl p-6 border border-blue-100">
           <h2 className="text-lg font-semibold text-blue-950 mb-4">Popular Categories</h2>
           <CategoryPills
@@ -870,6 +888,7 @@ export default function JobsPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }

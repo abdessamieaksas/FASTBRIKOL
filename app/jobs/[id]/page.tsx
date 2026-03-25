@@ -135,7 +135,9 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
               </div>
             </CardContent>
             <CardFooter>
-              <Button className="w-full">Apply for this Job</Button>
+              <Button className="w-full" asChild>
+                <Link href={`/post-job?category=${job.category.toLowerCase()}`}>Book this Service Now</Link>
+              </Button>
             </CardFooter>
           </Card>
 

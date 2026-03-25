@@ -1,9 +1,9 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect, Suspense } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { signIn } from "next-auth/react"
 import { Wrench, Eye, EyeOff, Check, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -13,7 +13,17 @@ import { Label } from "@/components/ui/label"
 import { NavBar } from "@/components/nav-bar"
 
 export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">Loading...</div>}>
+      <RegisterForm />
+    </Suspense>
+  )
+}
+
+function RegisterForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const roleParam = searchParams.get("role")
   const [showPassword, setShowPassword] = useState(false)
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false)
   const [formData, setFormData] = useState({
@@ -25,6 +35,13 @@ export default function RegisterPage() {
   })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
+
+  // Handle pre-filling role from URL
+  useEffect(() => {
+    if (roleParam === "offer-services" || roleParam === "find-worker") {
+      setFormData((prev) => ({ ...prev, role: roleParam }))
+    }
+  }, [roleParam])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target

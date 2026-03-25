@@ -2,8 +2,8 @@
 
 import type React from "react"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect, Suspense } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { Calendar, Clock, DollarSign, Info, MapPin, Upload, X, CheckCircle2 } from "lucide-react"
@@ -39,7 +39,17 @@ const serviceCategories = [
 ]
 
 export default function PostJobPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">Loading...</div>}>
+      <PostJobForm />
+    </Suspense>
+  )
+}
+
+function PostJobForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const categoryParam = searchParams.get("category")
   const [step, setStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
@@ -59,6 +69,19 @@ export default function PostJobPage() {
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  // Handle pre-filling category from URL
+  useEffect(() => {
+    if (categoryParam) {
+      const matchedCategory = serviceCategories.find(
+        (cat) => cat.value.toLowerCase() === categoryParam.toLowerCase() || 
+                 cat.label.toLowerCase() === categoryParam.toLowerCase()
+      )
+      if (matchedCategory) {
+        setFormData((prev) => ({ ...prev, category: matchedCategory.value }))
+      }
+    }
+  }, [categoryParam])
 
   // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

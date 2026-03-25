@@ -104,7 +104,7 @@ export function JobList({ jobs }: JobListProps) {
                   className="bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 shadow-sm hover:shadow rounded-full px-5"
                   asChild
                 >
-                  <Link href={`/jobs/${job.id}`}>View Details</Link>
+                  <Link href={`/post-job?category=${job.category.toLowerCase()}`}>Book Now</Link>
                 </Button>
               </div>
             </div>

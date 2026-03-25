@@ -136,7 +136,7 @@ export function NavBar() {
                   How It Works
                 </Link>
                 <Link
-                  href="#"
+                  href="/about"
                   className="text-lg font-medium hover:text-blue-600 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
